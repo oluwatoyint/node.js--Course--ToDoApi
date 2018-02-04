@@ -1,74 +1,31 @@
-  
+var express = require('express');
+var bodyParser = require('body-parser');
 
-// var Todo = mongoose.model('Todo', {
-//     text: {
-//         type: String
-//     },
-//     completed:{
-//         type: Boolean
-//     },
-//     completedAt: {
-//         type: Number
-//     }
-// });
 
-// Creating a Model using Validators
-var user = mongoose.model('user', {
-    emailaddress: {
-        type: String,
-        required: true,
-        minlength:1,
-        trim: true
-    },
-    completed:{
-        type: Boolean,
-        default: false
-    },
-    completedAt: {
-        type: Number,
-        default: null
-    }
-});
-// var newTodo = new Todo ({
-//     text: 'Cook Dinner'
+var {mongoose} = require('./db/mongoose');
+var {todo} = require('./models/todo');
+var {user} = require('./models/user');
 
-// });
+var app = express();
 
-// newTodo.save().then((doc) => {
+app.use(bodyParser.json());
 
-//     console.log('Saved todo', doc);
-// }, (e) => {
-//     console.log('Unable to Save todo');
+app.post('/todos', (req, res) => {
 
-// })
-
-// var myTodo = new Todo ({
-//     text: "I love Node.js",
-//     completed: false,
-//     completedAt: 2
-// })
-
-// myTodo.save().then((doc) => {
-
-//     console.log('Saved todo', doc);
-// }, (e) => {
+      var mytodo = new todo ({
+          text: req.body.text
+      });
     
-//     console.log('Unable to Save todo');
+  mytodo.save().then((doc) => {
+      res.send(doc);
+  }, (e) => {
+      res.status(400).send(e);
 
-// })
-
-// Validation Lesson 1
-var myvalidator = new user ({
-
-    emailaddress: "    wificombatacademy@gmail.com  ",
-
-    
-})
-myvalidator.save().then((doc) => {
-    console.log(JSON.stringify(doc, undefined, 2));
-}, (err) => {
-    console.log ('Unable to Save User');
-
-  app.listen(3000, () => {
-      console.log('Started on port 3000');
   });
+
+});
+
+app.listen(3000, () => {
+    console.log('Started on port 3000');
+});
+module.exports = {app};
